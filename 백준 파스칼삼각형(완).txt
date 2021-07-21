@@ -1,0 +1,120 @@
+#include<stdio.h>
+struct linked_list
+{
+	int value;
+	sturct linked_list *left;
+	struct linked_list *right;
+	struct linked_list *left_down;
+	struct linked_list *right_down;
+}; //리스트 구조체
+typedef struct linked_list list;
+char calc (char r,char c,char w); //r,c,w 값에 따라 최대한 간략하게 만들어진 리스트의 합계를 구함
+void make_list(char r, char w);//리스트의 만드는층은 알과 더블유의 값에의해 결정된다.
+void init_list(linked_list*); //리스트를 쓸려면 초기화하는것이 좋다
+int main (void)
+{
+	char r,c,w;
+	char result;
+	scanf("%d  %d %d" , &r,&c,&w);
+	result = calc(r,c,w);
+	printf("\n%d" , result);
+
+
+
+
+
+
+}
+void init_list(list *a)
+{
+	a = (linked_list)malloc(sizeof(linked_list));
+	a->left = NULL;
+	a->right = NULL;
+	a->left_down = NULL;
+	a->right_down = NULL; //리스트 초기화 후 연결을 하거나 값을 대입한다.
+}
+list* make_list(char r, char w) // 파스칼의 삼각형을 r+w-1까지 만든다.
+{
+	list *pre;
+	list *head;
+	list first;
+	init_list(&first);
+	first.value = 1;
+	head =&first;
+	list * curr;
+	for(int i = 0; i<r+w-1;i++)
+	{ //층을 r+w-1까지
+		for(int r=0;r<2(i+1);r++)
+		if(curr->left == NULL&&curr->right ==NULL) //오직 2번째 줄 초기화
+		{
+			curr->left_down = init_list();
+			curr->left_down->value = 1;
+			curr->right_down = init_list();
+			curr->right_down->value = 1;
+			curr->left_down->right = curr->right_down;
+			curr->right->down->left = curr->left_down;
+		}
+
+		else if(curr->left == NULL&&curr->right !=NULL)
+		{
+			curr->left_down = init_list();
+			curr->left_down->value = 1;
+			curr->right_down = init_list();
+			curr->right_down->value = curr->value+curr->right->value;
+
+		}	
+		else if(curr->right ==NULL&&curr->left!=NULL)
+		{
+			curr->right_down = init_list();
+			curr->right_down->value = 1;
+			curr->left_down = init_list();
+			curr->left_down->value = curr->value+curr->left->value;			
+		}
+		else if(curr->left !=NULL && curr->right !=NULL)
+		{
+			curr->right_down = init_list();
+			curr->right_down->value = curr->value+curr->right->value;
+			curr->left_down = init_list();
+			curr->left_down->value = curr->value+curr->left->value;
+
+		}
+		if(curr)
+		{
+			pre = curr;
+			curr = NULL;
+		}// 연결한뒤에 curr과 pre를 사용하여 left와 right로 연결해야 한다. 연결해야 이 프로그램의 핵심인 더하기를 할때 조금더 빨리 할 수 있게된다.
+		if(pre &&curr)
+		{
+			pre->right = curr;
+			curr->left = pre;
+			pre = NULL;
+			pre = curr;
+
+		}	//만드는 갯수 //모르는것 : 연결리스트에서 생성할때 왜 엠얼록함수를 사용하는것인가? == 함수안에서 리스트 구조체를생성하면 지역변수가 되어서 메모리에 할당을 해야 그 블록을 벗어나서도 쓸수 가 있다.
+			
+		
+
+	}
+	return head;
+
+}
+void tree(list *head,char* result)
+{
+	if(head){
+	*result +=head->value;
+	tree(head->left_down);
+	tree(head->right_down);
+	}
+}
+char calc(char r, char c, char w)// 리스트를 만드는 함수를 호출한뒤 만들어진 리스트를 토대로 합계를 구한다.
+{
+	char result=0;
+	list*head = make_list(r,w);
+	for(int i=0;i<r;i++)
+		head= head->left_down;
+	for(int i=0;i<c;i++)
+		head= head->right;
+	tree(head,&result);
+
+	return result;
+}
