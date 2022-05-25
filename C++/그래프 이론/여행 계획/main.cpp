@@ -43,9 +43,9 @@ void union_p(int trip_a,int trip_b)
   int parent_a = find_p(trip_a);
   int parent_b = find_p(trip_b);
   if(parent_a<parent_b)
-    parents[trip_b] = parent_a;
+    parents[parent_b] = parent_a;
   else
-    parents[trip_a] = parent_b;  
+    parents[parent_a] = parent_b;  
 }
 int main() {
   int N,M;
