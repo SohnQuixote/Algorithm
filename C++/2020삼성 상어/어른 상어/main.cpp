@@ -107,8 +107,11 @@ void clear_sea(int N,int K)
               {
                 sea[i][j].pop_back();
               }
+            int shark = sea[i][j][0].first;
+            scent_sea[i][j] = make_pair(shark,K);
           }
-          if(size == 1)
+          
+          else if(size == 1)
           {
             int shark = sea[i][j][0].first;
             scent_sea[i][j] = make_pair(shark,K);
@@ -167,13 +170,13 @@ int calc(int N, int M, int K, int shark_dir[][4][4])
   //상어 이동방향 결정 - 인접한 칸중 아무 냄새가 없는 칸
   //없으면 자신의 칸
   //여러개일 경우 우선순위
-  while(chk_finished(N) && result<1000)
+  while(chk_finished(N))
     {
       //if(result<30)
         //print_sea_scent(N,result);
       //clear_sea(N);
       result++;
-      if(result == 1000) //1000일 때 움직이면 안됨
+      if(result == 1001) //1000일 때 움직이면 안됨
         break;
       vector<tuple<int,int,int>> scent_spread;
       //x,y 번호
@@ -340,7 +343,7 @@ int calc(int N, int M, int K, int shark_dir[][4][4])
       clear_sea(N,K);
   }
   //print_sea_scent(N,result);
-  if(result == 1000)
+  if(result == 1001)
     return -1;
   return result;
 }
