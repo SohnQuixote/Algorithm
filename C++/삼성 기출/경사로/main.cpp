@@ -14,9 +14,11 @@ using namespace std;
   모든 길로 쭉 가다가 못가면 경사로 놓아보고 못놓으면 못감
 */
 vector<vector<int>> map(100,vector<int>(100,0));
+int N;
 int walk(vector<int> r,int L)
 {
   int walking_height = r[0];
+  vector<bool>placed(N,false);
   int distance = r.size();
   for(int i=1;i<distance;i++)
     {
@@ -29,30 +31,44 @@ int walk(vector<int> r,int L)
         //낮은데 높은데 두개다 고려해야함
       else if((walking_height - r[i]) == -1)
       {
-        for(int k=i;k<i+L;k++)
+        //높음
+        for(int k=i-1;k>i-1-L;k--)
           {
-            if(r[k] != r[i])
+            if(k<0|| placed[k] == true || r[k] != r[i-1])
             {
+              //경사로 설치 불가능 -> 평평 X 이미 설치
               return 0;
               
             }
             
           }
-          i+=L-1;
+          //i+=L-1;
+          for(int k=i-1;k>i-1-L;k--)
+          {
+            //r[k] = -1;//경사로 설치  
+            placed[k] = true;
+          }
           walking_height = r[i];
       }
       else if((walking_height - r[i]) == 1)
       {
-          for(int k=i-1;k>i-L;k--)
+        //낮음
+          for(int k=i;k<i+L;k++)
           {
-            if(k<0 || r[k] != r[i])
+            if(k>=N ||placed[k] == true|| r[k] != r[i])
             {
               return 0;
               
             }
             
           }
-        
+          for(int k=i;k<i+L;k++)
+          {
+            //r[k] = -1;
+            placed[k] = true;
+          }
+          walking_height = r[i+L-1];
+          i = i+L-1;        
       }
       
     }
@@ -60,7 +76,7 @@ int walk(vector<int> r,int L)
 }
 int main() {
   int result = 0;
-  int N,L;
+  int L;
   cin>>N>>L;
   for(int i=0;i<N;i++)
     {
