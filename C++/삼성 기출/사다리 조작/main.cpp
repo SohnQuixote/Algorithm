@@ -22,44 +22,40 @@ vector<pair<int,int>> ladder_range(vector<vector<int>> ladder, int down)
   vector<pair<int,int>> result;
   vector<int> tmp;
   int first  =0;
-  bool flag = false;
   //tmp.push_back(-1);
-  //cout<<down<<endl;  
   for(int a = 0;a<H;a++)
     {
-      if((down-1)>= 1 && ladder[a][down-1]==1)
+      if((down-1)>= 0 && ladder[a][down-1]==1)
       {
         tmp.push_back(a);
-        flag = true;
       }
       else if(ladder[a][down] == 1)
       {
         tmp.push_back(a);
-        flag = true;
       }
       else if((down+1) < N-1 && ladder[a][down+1] == 1)
       {
         tmp.push_back(a);
-        flag =true;
       }
       
     }
-    if(!flag)
+    if(tmp.size() == 0)
     {
-      //아예 없음
-      result.push_back(make_pair(1,H));
+      result.push_back(make_pair(0,H));
       return result;
     }
     if(tmp.size() == 1)
     {
-      result.push_back(make_pair(1,tmp[0]));
-      result.push_back(make_pair(tmp[0],H));
+      if(tmp[0] != 0)
+        result.push_back(make_pair(0,tmp[0]));
+      if(tmp[0] != H-1)
+        result.push_back(make_pair(tmp[0],H));
       return result;
     }
     //tmp.push_back(H-1);
-    else if(tmp[0] != 0)
+    if(tmp[0] != 0)
     {
-      result.push_back(make_pair(1,tmp[0]));
+      result.push_back(make_pair(0,tmp[0]));
     }
     for(int i=1;i<tmp.size();i++)
       {
@@ -79,7 +75,7 @@ inline bool chk_ladders(vector<vector<int>> ladder)
 {
   bool result =true;
   //vector<pair<int,int>>p;
-  for(int i=0;i<N-1;i++)
+  for(int i=0;i<N;i++)
     {
       int down = i;
       for(int j = 0;j<H;j++)
@@ -88,7 +84,7 @@ inline bool chk_ladders(vector<vector<int>> ladder)
           {
             down = down-1; 
           }
-          else if((down) < N-1 && ladder[j][down])
+          else if((down) < N && ladder[j][down])
           {
             down = down+1;     
           }
@@ -105,6 +101,21 @@ inline bool chk_ladders(vector<vector<int>> ladder)
     }*/
   return true;
 }
+inline bool chk_place(vector<vector<int>> ladder, int h,int d)
+{
+  bool result =true;
+  if((d-1)>=0)
+  {
+    if(ladder[h][d-1])
+      return false;
+  }
+  if((d+1) <N)
+  {
+    if(ladder[h][d+1])
+      return false;  
+  }
+  return result;
+}
 int calc(vector<vector<int>> ladder, int number)
 {
   vector<pair<int,int>> range;
@@ -119,7 +130,6 @@ int calc(vector<vector<int>> ladder, int number)
       for(int k = 0;k<range.size();k++)
         {
           int height = (range[k].second + range[k].first)/2;
-          //cout<<height<<' '<<i <<endl;
           //안되면 마지막 부분 
           ladder[height][i] = 1;
           result = min(result,calc(ladder,number+1));
@@ -134,14 +144,12 @@ int main() {
 
 cin>>N>>M>>H;
 
-vector<vector<int>> ladder(33,vector<int>(10,0));
-  //vector<bool>ladder_placed(H,false);
+vector<vector<int>> ladder(30,vector<int>(9,0));
   for(int i=0;i<M;i++)
     {
       int a,b;
       cin>>a>>b;
-      //ladder_placed[a-1] = true;
-      ladder[a][b] = 1; //b-1과 b연결
+      ladder[a-1][b-1] = 1; //b-1과 b연결
 
       
     }
@@ -150,11 +158,16 @@ vector<vector<int>> ladder(33,vector<int>(10,0));
     cout<<0<<endl;
     return 0;
   }
-  
+  if(M== (N-1) *H)
+  {
+    cout<<-1<<endl;
+    return 0;
+  }
+
+
   int chk = calc(ladder, 0);
   if(chk>3)
     cout<<-1<<endl;
   else
     cout<<chk<<endl;
-  
 }
