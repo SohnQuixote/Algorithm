@@ -1,0 +1,64 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+/*
+  폴리오미노
+  n개의 정사각형 구성 폴리오미노 만들려함
+  세로로 단조인 폴리오미노의 수
+  가로줄 한줄 두개 교차 안하면 됨
+
+*/
+const int MOD = 10000000;
+int C,n;
+
+
+
+
+int cache[101][101];
+int place(int rem,int pre)
+{
+  if(rem<=0)
+    return 1;
+  int &ret = cache[rem][pre];
+  if(ret) return ret;
+  for(int num=1;num<=rem;num++)
+    {
+      if(!pre)
+      {
+        ret+=place(rem-num,num);
+      }
+      else
+      {
+        ret +=(pre+num-1) * place(rem-num,num);
+      }
+      
+      ret%=MOD;
+
+      
+    }
+  //ret %= MOD;
+  return ret;
+
+
+
+  
+}
+
+
+
+
+int main() {
+  cin>>C;
+  for(int tc=0;tc<C;tc++)
+    {
+      cin>>n;
+              
+      memset(cache,0,sizeof(cache));
+      int result= place(n,0);
+      //if(result <0) result+=MOD;
+      cout<<result<<'\n';
+
+      
+    }
+}
